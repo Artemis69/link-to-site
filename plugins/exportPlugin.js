@@ -8,7 +8,7 @@ export const exportPlugin = () => {
       async transform(html) {
         await fs.writeFile(
           './out/index.js',
-          'export default `' + html + '`',
+          'export default `' + html.replaceAll('`', '\\`').replaceAll('${', '\\${') + '`',
           'utf8'
         )
       },

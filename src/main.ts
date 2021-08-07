@@ -60,16 +60,12 @@ submitButton.addEventListener('click', async () => {
       }),
     })
 
-    const data = await (<Promise<IRes>>res.json())
+    const data: IRes = await res.json()
 
     if (res.status === 201) {
-      output.innerHTML =
-        '<p>Успех! А вот и <a target="_blank" href="/' +
-        data.id +
-        '">ссылка</a></p>'
+      output.innerHTML = `<p>Успех! А вот и <a target="_blank" href="/'${data.id}">ссылка</a></p>`
     } else {
-      output.innerHTML =
-        '<p>Произошла ошибка. Причина: <span>' + data.message + '</span></p>'
+      output.innerHTML = `<p>Произошла ошибка. Причина: <span>${data.message}</span></p>`
     }
   } catch {
     output.innerHTML =
@@ -128,10 +124,7 @@ const updatePreview = () => {
   const _description = description || 'Тут будет описание'
 
   if (discordImage.getAttribute('src') !== _image) {
-    twitterImage.setAttribute(
-      'style',
-      'background-image: url("' + _image + '")'
-    )
+    twitterImage.setAttribute('style', `background-image: url("${_image}")`)
     discordImage.setAttribute('src', _image)
   }
 
