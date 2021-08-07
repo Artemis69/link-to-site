@@ -63,7 +63,7 @@ submitButton.addEventListener('click', async () => {
     const data: IRes = await res.json()
 
     if (res.status === 201) {
-      output.innerHTML = `<p>Успех! А вот и <a target="_blank" href="/'${data.id}">ссылка</a></p>`
+      output.innerHTML = `<p>Успех! А вот и <a target="_blank" href="/${data.id}">ссылка</a></p>`
     } else {
       output.innerHTML = `<p>Произошла ошибка. Причина: <span>${data.message}</span></p>`
     }
