@@ -81,24 +81,30 @@ resetButton.addEventListener('click', () => {
   updatePreview()
 })
 
-if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+
+if (darkModeMediaQuery.matches) {
   document.documentElement.classList.add('dark')
   sample_image = 'laZu7Ot'
 }
 
-window
-  .matchMedia('(prefers-color-scheme: dark)')
-  .addEventListener('change', e => {
-    if (e.matches) {
-      document.documentElement.classList.add('dark')
-      sample_image = 'laZu7Ot'
-    } else {
-      document.documentElement.classList.remove('dark')
-      sample_image = 'FbEj0le'
-    }
+function onDarkModeChange(e: MediaQueryListEvent) {
+  if (e.matches) {
+    document.documentElement.classList.add('dark')
+    sample_image = 'laZu7Ot'
+  } else {
+    document.documentElement.classList.remove('dark')
+    sample_image = 'FbEj0le'
+  }
 
-    updatePreview()
-  })
+  updatePreview()
+}
+
+try {
+  darkModeMediaQuery.addEventListener('change', onDarkModeChange)
+} catch {
+  darkModeMediaQuery.addListener(onDarkModeChange)
+}
 
 const twitterTitle: HTMLHeadingElement = preview.querySelector(
     '.twitterTextBlock h2'
