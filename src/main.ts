@@ -4,7 +4,6 @@ import light_preview_image from './assets/light_preview.png'
 
 export interface IRes {
   message: string
-  status: number
   id?: string
 }
 
