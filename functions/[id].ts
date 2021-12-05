@@ -1,7 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import type { IPage } from '../lib/types'
-import { createFakePreview, isBot } from '../lib'
+import { createFakePreview, createResponse, isBot } from '../lib'
 
 const page404 = () =>
   new Response(
@@ -30,24 +30,28 @@ const page404 = () =>
   )
 
 export const onRequestGet = async (func: PagesFunction) => {
-  const id = req.params.id as string
+  try {
+    const id = func.params.id as string
 
-  const request = func.request as Request
-  const DB = func.env.DB as KVNamespace
+    const request = func.request as Request
+    const DB = func.env.DB as KVNamespace
 
-  const probably_a_data = await DB.get(id)
+    const probably_a_data = await DB.get(id)
 
-  if (!probably_a_data) return page404()
+    if (!probably_a_data) return page404()
 
-  const data: IPage = JSON.parse(probably_a_data)
+    const data: IPage = JSON.parse(probably_a_data)
 
-  if (isBot(request)) {
-    return new Response(createFakePreview(data), {
-      headers: {
-        'Content-Type': 'text/html; charset=UTF-8',
-      },
-    })
-  } else {
-    return Response.redirect(data.redirect, 302)
+    if (isBot(request)) {
+      return new Response(createFakePreview(data), {
+        headers: {
+          'Content-Type': 'text/html; charset=UTF-8',
+        },
+      })
+    } else {
+      return Response.redirect(data.redirect, 302)
+    }
+  } catch (error) {
+    return createResponse({ message: error.message }, 500)
   }
 }
