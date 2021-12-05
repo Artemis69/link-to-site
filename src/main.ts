@@ -1,4 +1,6 @@
 import './style.css'
+import dark_preview_image from './assets/dark_preview.png'
+import light_preview_image from './assets/light_preview.png'
 
 export interface IRes {
   message: string
@@ -18,7 +20,7 @@ let title = '',
   description = '',
   image = '',
   redirect = '',
-  sample_image = 'FbEj0le'
+  preview_image = light_preview_image
 
 form.querySelector('#title').addEventListener('input', e => {
   title = (e.target as HTMLInputElement).value
@@ -69,7 +71,7 @@ submitButton.addEventListener('click', async () => {
     }
   } catch {
     output.innerHTML =
-      '<p>Произошла ошибка. <span role="img" aria-label="Сожалеет">😔</span> Пожалуйста, сообщите об ошибке <a target="_blank" rel="noreferrer" href="https://github.com/Artemis69/">разработчику</a>.</p>'
+      '<p>Произошла ошибка. <span role="img" aria-label="Сожалеющее лицо">😔</span> Пожалуйста, сообщите об ошибке <a target="_blank" rel="noreferrer" href="https://github.com/Artemis69/">разработчику</a>.</p>'
   }
 })
 
@@ -85,26 +87,24 @@ const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
 if (darkModeMediaQuery.matches) {
   document.documentElement.classList.add('dark')
-  sample_image = 'laZu7Ot'
+  preview_image = dark_preview_image
 }
 
 function onDarkModeChange(e: MediaQueryListEvent) {
   if (e.matches) {
     document.documentElement.classList.add('dark')
-    sample_image = 'laZu7Ot'
+    preview_image = dark_preview_image
   } else {
     document.documentElement.classList.remove('dark')
-    sample_image = 'FbEj0le'
+    preview_image = light_preview_image
   }
 
   updatePreview()
 }
 
-try {
-  darkModeMediaQuery.addEventListener('change', onDarkModeChange)
-} catch {
-  darkModeMediaQuery.addListener(onDarkModeChange)
-}
+typeof darkModeMediaQuery.addEventListener === 'function'
+  ? darkModeMediaQuery.addEventListener('change', onDarkModeChange)
+  : darkModeMediaQuery.addListener(onDarkModeChange)
 
 const twitterTitle: HTMLHeadingElement = preview.querySelector(
     '.twitterTextBlock h2'
@@ -125,7 +125,7 @@ const twitterTitle: HTMLHeadingElement = preview.querySelector(
 twitterLink.innerHTML += document.location.href.split('#')[0]
 
 const updatePreview = () => {
-  const _image = image || 'https://i.imgur.com/' + sample_image + '.png'
+  const _image = image || preview_image
   const _title = title || 'Тут будет заголовок'
   const _description = description || 'Тут будет описание'
 

@@ -5,17 +5,25 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "typecheck": "tsc",
-    "build": "vite build && node ./scripts/export.js",
+    "dev:vite": "vite",
+    "dev": "npx wrangler pages dev --proxy 3000 -- npm run dev:vite",
+    "build": "vite build",
     "preview": "vite preview",
-    "format": "prettier --write ."
+    "preview:w": "npx wrangler pages dev ./dist --proxy 5000 --kv DB",
+    "format": "prettier --write .",
+    "typecheck": "tsc"
   },
   "devDependencies": {
-    "prettier": "2.4.1",
-    "typescript": "^4.4.3",
-    "vite": "^2.6.5",
+    "prettier": "2.5.1",
+    "typescript": "^4.5.2",
+    "vite": "^2.6.14",
     "vite-plugin-html": "^2.1.1",
     "vite-plugin-singlefile": "^0.5.1"
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "^3.2.0",
+    "@emotion/hash": "^0.8.0",
+    "nanoid": "^3.1.30",
+    "wrangler": "^0.0.0-beta.6"
   }
 }
