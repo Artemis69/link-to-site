@@ -5,11 +5,13 @@ import hash from '@emotion/hash'
 import { nanoid } from 'nanoid/non-secure'
 import { isURL, createResponse } from '../lib'
 
-export const onRequestPost = async (func: PagesFunction) => {
+export const onRequestPost: PagesFunction<{
+  DB: KVNamespace
+}> = async context => {
   try {
-    const request = func.request as Request
+    const { request } = context
     const body = (await request.json()) as Partial<IPage>
-    const DB = func.env.DB as KVNamespace
+    const { DB } = context.env
 
     if (!(body.description || body.image || body.redirect || body.title)) {
       return createResponse(

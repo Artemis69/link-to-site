@@ -29,14 +29,15 @@ const page404 = () =>
     }
   )
 
-export const onRequestGet = async (func: PagesFunction) => {
+export const onRequestGet: PagesFunction<{
+  DB: KVNamespace
+}> = async context => {
   try {
-    const id = func.params.id as string
+    const { id } = context.params
+    const { request } = context
+    const { DB } = context.env
 
-    const request = func.request as Request
-    const DB = func.env.DB as KVNamespace
-
-    const probably_a_data = await DB.get(id)
+    const probably_a_data = await DB.get(Array.isArray(id) ? id[0] : id)
 
     if (!probably_a_data) return page404()
 
