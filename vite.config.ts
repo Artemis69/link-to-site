@@ -1,16 +1,13 @@
 import { defineConfig } from 'vite'
-import { viteSingleFile } from 'vite-plugin-singlefile'
-import { minifyHtml } from 'vite-plugin-html'
 
-export default defineConfig(({ mode }) => {
-  const DEV = mode === 'development'
-
+export default defineConfig(() => {
   return {
-    plugins: [!DEV && viteSingleFile(), !DEV && minifyHtml()],
+    plugins: [],
     build: {
       cssCodeSplit: false,
       assetsInlineLimit: 0,
       target: ['chrome64'],
     },
+    appType: 'mpa'
   }
 })

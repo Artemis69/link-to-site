@@ -1,6 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import type { IPage } from '../lib/types'
+import type { ILargePage } from '../lib/types'
 import hash from '@emotion/hash'
 import { nanoid } from 'nanoid/non-secure'
 import { isURL, createResponse } from '../lib'
@@ -10,10 +10,10 @@ export const onRequestPost: PagesFunction<{
 }> = async context => {
   try {
     const { request } = context
-    const body = (await request.json()) as Partial<IPage>
+    const body = (await request.json()) as Partial<ILargePage>
     const { DB } = context.env
 
-    if (!(body.description || body.image || body.redirect || body.title)) {
+    if (!body.description || !body.image || !body.redirect || !body.title) {
       return createResponse(
         {
           message:
@@ -50,10 +50,11 @@ export const onRequestPost: PagesFunction<{
     await DB.put(
       id,
       JSON.stringify({
-        description: body.description,
-        image: body.image,
-        redirect: body.redirect,
-        title: body.title,
+        d: body.description,
+        i: body.image,
+        r: body.redirect,
+        t: body.title,
+        D: undefined /** todo: collect data of who created the url */
       })
     )
 

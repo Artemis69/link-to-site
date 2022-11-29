@@ -70,7 +70,7 @@ submitButton.addEventListener('click', async () => {
     }
   } catch {
     output.innerHTML =
-      '<p>Произошла ошибка. <span role="img" aria-label="Сожалеющее лицо">😔</span> Пожалуйста, сообщите об ошибке <a target="_blank" rel="noreferrer" href="https://github.com/Artemis69/">разработчику</a>.</p>'
+      '<p>Произошла ошибка. <span role="img" aria-label="Сожалеющее лицо">😔</span> Пожалуйста, сообщите об ошибке <a target="_blank" rel="noreferrer" href="https://github.com/yhdgms1/">разработчику</a>.</p>'
   }
 })
 

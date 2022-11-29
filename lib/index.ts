@@ -1,4 +1,4 @@
-import type { IPage } from './types'
+import type { ILargePage, IPage } from './types'
 
 const escaped: { [key: string]: string } = {
   '"': '&quot;',
@@ -11,7 +11,20 @@ const escaped: { [key: string]: string } = {
 const escape = (html: string): string =>
   html.replace(/["'&<>]/g, match => escaped[match])
 
-export const createFakePreview = (props: IPage) =>
+export const minimalToLargeData = (any: IPage) => {
+  if ('D' in any || 'd' in any) {
+    return {
+      title: any.t,
+      description: any.d,
+      image: any.i,
+      redirect: any.r,
+    }
+  }
+
+  return any;
+}
+
+export const createFakePreview = (props: ILargePage) =>
   `<!DOCTYPE html>
 <html>
 <head>
