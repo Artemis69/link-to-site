@@ -1,9 +1,10 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import type { ILargePage } from '../lib/types'
-import hash from '@emotion/hash'
 import { nanoid } from 'nanoid/non-secure'
 import { isURL, createResponse } from '../lib'
+
+const hash = (s: string) => s.split("").reduce((a, b) => ((a << 5) - a + b.charCodeAt(0)) | 0, 0).toString(36).slice(1);
 
 export const onRequestPost: PagesFunction<{
   DB: KVNamespace
