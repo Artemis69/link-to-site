@@ -1,17 +1,37 @@
-export interface ILargePage {
-  title: string
-  description: string
-  image: string
-  redirect: string
-}
-
-export interface IMinimalPage {
+export type IPage = {
+  /**
+   * Title
+   */
   t: string;
+  /**
+   * Description
+   */
   d: string;
+  /**
+   * Image
+   */
   i: string;
+  /**
+   * Redirect URL
+   */
   r: string;
-
-  D?: string;
 }
 
-export type IPage = ILargePage | IMinimalPage;
+export type IExpandedPage = {
+  /**
+   * Title
+   */
+  title: string;
+  /**
+   * Description
+   */
+  description: string;
+  /**
+   * Image
+   */
+  image: string;
+  /**
+   * Redirect URL
+   */
+  redirect: string;
+}

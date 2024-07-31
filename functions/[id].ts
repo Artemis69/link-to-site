@@ -1,7 +1,7 @@
 /// <reference types="@cloudflare/workers-types" />
 
 import type { IPage } from '../lib/types'
-import { createFakePreview, createResponse, isBot, minimalToLargeData } from '../lib'
+import { createFakePreview, createResponse, isBot, expandData } from '../lib'
 
 const page404 = () =>
   new Response(
@@ -43,14 +43,16 @@ export const onRequestGet: PagesFunction<{
 
     const data = maybeData as IPage;
 
+    const expanded = expandData(data);
+
     if (isBot(request)) {
-      return new Response(createFakePreview(minimalToLargeData(data)), {
+      return new Response(createFakePreview(expanded), {
         headers: {
           'Content-Type': 'text/html; charset=UTF-8',
         },
       })
     } else {
-      return Response.redirect('r' in data ? data.r : data.redirect, 302)
+      return Response.redirect(expanded.redirect, 302)
     }
   } catch (error) {
     return createResponse({ message: error.message }, 500)

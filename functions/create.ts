@@ -1,6 +1,6 @@
 /// <reference types="@cloudflare/workers-types" />
 
-import type { ILargePage } from '../lib/types'
+import type { IExpandedPage } from '../lib/types'
 import { nanoid } from 'nanoid/non-secure'
 import { isURL, createResponse } from '../lib'
 
@@ -10,15 +10,13 @@ export const onRequestPost: PagesFunction<{
   DB: KVNamespace
 }> = async context => {
   try {
-    const { request } = context
-    const body = (await request.json()) as Partial<ILargePage>
-    const { DB } = context.env
+    const { request, env: { DB } } = context;
+    const body: Partial<IExpandedPage> = await request.json();
 
     if (!body.description || !body.image || !body.redirect || !body.title) {
       return createResponse(
         {
-          message:
-            "Вы должны указать 'description', 'image', 'title' и 'redirect'",
+          message: "Вы должны указать 'description', 'image', 'title' и 'redirect'",
         },
         422
       )
@@ -26,6 +24,13 @@ export const onRequestPost: PagesFunction<{
 
     if (!isURL(body.redirect)) {
       return createResponse({ message: 'URL-адрес недействителен' }, 422)
+    }
+
+    if (body.redirect.length > 250) {
+      return createResponse(
+        { message: 'Длина URL-адреса для переадрессации должна быть меньше или равна 250' },
+        422
+      )
     }
 
     /*
@@ -46,6 +51,27 @@ export const onRequestPost: PagesFunction<{
       )
     }
 
+    if (body.image.startsWith('data:')) {
+      return createResponse(
+        { message: 'Запрещено использовать data:image' },
+        422
+      )
+    }
+
+    if (!isURL(body.image)) {
+      return createResponse(
+        { message: 'URL-адрес картинки недействителен' },
+        422
+      )
+    }
+
+    if (body.image.length > 200) {
+      return createResponse(
+        { message: 'Длина URL-адреса картинки должна быть меньше или равна 200' },
+        422
+      )
+    }
+
     const id = nanoid(6) + '_' + hash(body.redirect)
 
     await DB.put(
@@ -55,7 +81,6 @@ export const onRequestPost: PagesFunction<{
         i: body.image,
         r: body.redirect,
         t: body.title,
-        D: undefined /** todo: collect data of who created the url */
       })
     )
 

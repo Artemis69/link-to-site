@@ -1,4 +1,4 @@
-import type { ILargePage, IPage } from './types'
+import type { IPage, IExpandedPage } from './types'
 
 const escaped: { [key: string]: string } = {
   '"': '&quot;',
@@ -11,20 +11,16 @@ const escaped: { [key: string]: string } = {
 const escape = (html: string): string =>
   html.replace(/["'&<>]/g, match => escaped[match])
 
-export const minimalToLargeData = (any: IPage) => {
-  if ('D' in any || 'd' in any) {
-    return {
-      title: any.t,
-      description: any.d,
-      image: any.i,
-      redirect: any.r,
-    }
+export const expandData = (data: IPage): IExpandedPage => {
+  return {
+    description: data.d,
+    image: data.i,
+    redirect: data.r,
+    title: data.t
   }
-
-  return any;
 }
 
-export const createFakePreview = (props: ILargePage) =>
+export const createFakePreview = (props: IExpandedPage) =>
   `<!DOCTYPE html>
 <html>
 <head>
@@ -57,9 +53,15 @@ export function isBot(request: Request): boolean {
   )
 }
 
-export const isURL = (maybeAnURL: string): boolean => {
+export const isURL = (maybeURL: string): boolean => {
+  if ('canParse' in URL) {
+    try {
+      return URL.canParse(maybeURL)
+    } catch {}
+  }
+
   try {
-    new URL(maybeAnURL)
+    new URL(maybeURL)
   } catch {
     return false
   }
@@ -72,8 +74,9 @@ export const headers = {
   'Access-Control-Allow-Methods': 'GET, POST',
 }
 
-export const createResponse = (body: any, statusCode: number = 200) =>
-  new Response(JSON.stringify(body), {
+export const createResponse = (body: any, statusCode: number = 200) => {
+  return new Response(JSON.stringify(body), {
     status: statusCode,
     headers,
   })
+}
